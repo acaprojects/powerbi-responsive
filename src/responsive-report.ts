@@ -30,8 +30,8 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
     embed<Report>(container, merge(baseConfig, opts, {id, accessToken}))
         .then(bindResizer)
         .then(report => ({
-            reload: report.reload,
-            setAccessToken: report.setAccessToken,
-            fullscreen: report.fullscreen,
-            exitFullscreen: report.exitFullscreen
+            reload: report.reload.bind(report),
+            setAccessToken: report.setAccessToken.bind(report),
+            fullscreen: report.fullscreen.bind(report),
+            exitFullscreen: report.exitFullscreen.bind(report)
         }));
