@@ -1,0 +1,20 @@
+{
+  "name": "powerbi-responsive",
+  "version": "1.0.0",
+  "description": "Embed-able, responsive reports from PowerBI",
+  "repository": "https://github.com/acaprojects/powerbi-responsive",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kim Burgess <kim@acaprojects.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.1",
+    "typescript": "^2.4.2"
+  },
+  "dependencies": {
+    "powerbi-client": "^2.3.5"
+  }
+}
