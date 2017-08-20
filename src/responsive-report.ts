@@ -21,6 +21,17 @@ const bindResizer = (report: Report) => {
 };
 
 /**
+ * Expose a set of actions on a reponsive report that are safe to be passed to
+ * the outside world.
+ */
+const exposeActions = (report: Report) => ({
+    reload: report.reload.bind(report),
+    setAccessToken: report.setAccessToken.bind(report),
+    fullscreen: report.fullscreen.bind(report),
+    exitFullscreen: report.exitFullscreen.bind(report)
+});
+
+/**
  * Embed a view-only, reponsive report in the specified element.
  *
  * The report should be formed with mutliple pages, providing appropriate
@@ -29,9 +40,4 @@ const bindResizer = (report: Report) => {
 export const embedReport = (id: string, accessToken: string, container: HTMLElement, opts: IEmbedConfiguration = {}) =>
     embed<Report>(container, merge(baseConfig, opts, {id, accessToken}))
         .then(bindResizer)
-        .then(report => ({
-            reload: report.reload.bind(report),
-            setAccessToken: report.setAccessToken.bind(report),
-            fullscreen: report.fullscreen.bind(report),
-            exitFullscreen: report.exitFullscreen.bind(report)
-        }));
+        .then(exposeActions);
