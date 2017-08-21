@@ -2,7 +2,7 @@
 
 > Create responsive, embed-able reports from Power BI.
 
-Standard [PowerBI](http://powerbi.com/) reports provide a single, static layout (and optional, secondary layout when viewed with PowerBI modile app). This presents some challenges when embedding these within responsive UI's.
+Standard [PowerBI](http://powerbi.com/) reports provide a single, static layout (and optional, secondary layout when viewed with PowerBI mobile app). This presents some challenges when embedding these within responsive UI's.
 
 To support this, we can take advantage of the ability to build a report from multiple pages, each with their own dimensions. Once a report is prepared in this way, this library enables embedding and dynamic view selection.
 
@@ -16,7 +16,7 @@ Build your initial PowerBI report as you would any other. For pages where you wi
 
 > <sup>*</sup>`min-width`, `max-width`, `min-height` and `max-height` parameters are supported with values in `px`.
 
-For example, to enable reponsive layouts for a page titled `MyReport`, create the following pages:
+For example, to enable responsive layouts for a page titled `MyReport`, create the following pages:
 *   `MyReport [min-width: 960px]`
 *   `MyReport [min-width: 768px]`
 *   `MyReport [min-width: 480px]`
