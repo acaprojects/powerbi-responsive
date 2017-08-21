@@ -62,6 +62,8 @@ const getPages = (report: Report) => {
 const exposeActions = (report: Report) => ({
     setPage: setPage(report),
     getPages: () => getPages(report),
+    getFilters: bind(report, report.getFilters),
+    setFilters: bind(report, report.setFilters),
     reload: bind(report, report.reload),
     setAccessToken: bind(report, report.setAccessToken),
     fullscreen: bind(report, report.fullscreen),
