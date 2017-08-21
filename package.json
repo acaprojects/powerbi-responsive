@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Embed-able, responsive reports from PowerBI",
   "repository": "https://github.com/acaprojects/powerbi-responsive",
-  "main": "./dist/powerbi-responsive.js",
+  "main": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && concurrently \"tsc\" \"rollup -c\"",
+    "dev": "concurrently --kill-others \"tsc -w\" \"rollup -c -w\""
   },
   "author": "Kim Burgess <kim@acaprojects.com>",
   "license": "MIT",
@@ -15,11 +16,13 @@
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015-rollup": "^3.0.0",
+    "concurrently": "^3.5.0",
     "rollup": "^0.47.6",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript2": "^0.5.0",
+    "rollup-plugin-uglify": "^2.0.1",
     "typescript": "^2.4.2"
   },
   "dependencies": {
