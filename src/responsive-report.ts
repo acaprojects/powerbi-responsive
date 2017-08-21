@@ -1,4 +1,4 @@
-import { models, Report, IEmbedConfiguration } from 'powerbi-client';
+import { models, Report, Page, IEmbedConfiguration } from 'powerbi-client';
 import { embed } from './embedder';
 import { merge } from './utils';
 
@@ -15,6 +15,20 @@ const baseConfig: IEmbedConfiguration = {
     }
 };
 
+/**
+ * Extract responsive layout metadata from a page.
+ */
+const extractPage = (page: Page) => {
+    return {
+        name: page.displayName,
+        isActive: () => page.isActive,
+        activate: page.setActive.bind(page),
+        minWidth: 0,
+        maxWidth: Number.MAX_VALUE,
+        minHeight: 0,
+        maxHeight: Number.MAX_VALUE
+    };
+};
 const bindResizer = (report: Report) => {
     // TODO bind to view resize events
     return report;
@@ -32,6 +46,17 @@ const setPage = (report: Report) => (name: string) => {
 };
 
 /**
+ * Get a list of all pages within the report.
+ *
+ * Where multiple, reponsive layouts exist for a page, these will be merged
+ * into a single entity.
+ */
+const getPages = (report: Report) => {
+    const queryPages = report.getPages.bind(report) as () => Promise<Page[]>;
+    return queryPages().then(pages => pages.map(extractPage));
+};
+
+/**
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
@@ -41,6 +66,7 @@ const exposeActions = (report: Report) => ({
     setAccessToken: report.setAccessToken.bind(report),
     fullscreen: report.fullscreen.bind(report),
     exitFullscreen: report.exitFullscreen.bind(report)
+    getPages,
 });
 
 /**
