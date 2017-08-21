@@ -1,5 +1,10 @@
 # PowerBI-Responsive
 
+[![Build Status](https://travis-ci.org/acaprojects/powerbi-responsive.svg?branch=master)](https://travis-ci.org/acaprojects/powerbi-responsive)
+[![Code Climate](https://codeclimate.com/github/acaprojects/powerbi-responsive/badges/gpa.svg)](https://codeclimate.com/github/acaprojects/powerbi-responsive)
+[![Dependencies Status](https://david-dm.org/acaprojects/powerbi-responsive/status.svg)](https://david-dm.org/acaprojects/powerbi-responsive)
+[![npm version](https://badge.fury.io/js/powerbi-responsive.svg)](https://badge.fury.io/js/powerbi-responsive)
+
 Standard [PowerBI](http://powerbi.com/) reports provide a single, static layout (and optional, secondary layout when viewed with PowerBI mobile app). This presents some challenges when embedding these within responsive UI's.
 
 To support this, we can take advantage of the ability to build a report from multiple pages, each with their own dimensions. Once a report is prepared in this way, this library enables embedding and dynamic view selection.
