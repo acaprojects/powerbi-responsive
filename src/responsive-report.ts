@@ -1,6 +1,6 @@
 import { models, Report, Page, IEmbedConfiguration } from 'powerbi-client';
 import { embed } from './embedder';
-import { merge } from './utils';
+import { merge, bind } from './utils';
 
 const baseConfig: IEmbedConfiguration = {
     type: 'report',
@@ -18,17 +18,16 @@ const baseConfig: IEmbedConfiguration = {
 /**
  * Extract responsive layout metadata from a page.
  */
-const extractPage = (page: Page) => {
-    return {
-        name: page.displayName,
-        isActive: () => page.isActive,
-        activate: page.setActive.bind(page),
-        minWidth: 0,
-        maxWidth: Number.MAX_VALUE,
-        minHeight: 0,
-        maxHeight: Number.MAX_VALUE
-    };
-};
+const extractPage = (page: Page) => ({
+    name: page.displayName,
+    isActive: () => page.isActive,
+    activate: bind(page, page.setActive),
+    minWidth: 0,
+    maxWidth: Number.MAX_VALUE,
+    minHeight: 0,
+    maxHeight: Number.MAX_VALUE
+});
+
 const bindResizer = (report: Report) => {
     // TODO bind to view resize events
     return report;
@@ -60,18 +59,14 @@ const getPages = (report: Report) => {
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
-const exposeActions = (report: Report) => {
-    // tslint:disable-next-line:ban-types
-    const bind = <T extends Function>(f: T) => f.bind(report) as T;
-    return {
-        setPage: setPage(report),
-        getPages: () => getPages(report),
-        reload: bind(report.reload),
-        setAccessToken: bind(report.setAccessToken),
-        fullscreen: bind(report.fullscreen),
-        exitFullscreen: bind(report.exitFullscreen)
-    };
-};
+const exposeActions = (report: Report) => ({
+    setPage: setPage(report),
+    getPages: () => getPages(report),
+    reload: bind(report, report.reload),
+    setAccessToken: bind(report, report.setAccessToken),
+    fullscreen: bind(report, report.fullscreen),
+    exitFullscreen: bind(report, report.exitFullscreen)
+});
 
 /**
  * Embed a view-only, reponsive report in the specified element.

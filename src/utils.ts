@@ -9,3 +9,9 @@ export const merge = <T>(...xs: T[]) => Object.assign({}, ...xs) as T;
  * properties of both. Duplicate keys will be overridden in preference of `b`.
  */
 export const extend = <A, B>(a: A, b: B) => merge<A | B>(a, b) as A & B;
+
+/**
+ * Provide a parametrically polymorphic bind method.
+ */
+// tslint:disable-next-line:ban-types
+export const bind = <T extends Function>(thisArg: any, f: T) => f.bind(thisArg) as T;
