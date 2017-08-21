@@ -1,7 +1,5 @@
 # PowerBI-Responsive
 
-> Create responsive, embed-able reports from Power BI.
-
 Standard [PowerBI](http://powerbi.com/) reports provide a single, static layout (and optional, secondary layout when viewed with PowerBI mobile app). This presents some challenges when embedding these within responsive UI's.
 
 To support this, we can take advantage of the ability to build a report from multiple pages, each with their own dimensions. Once a report is prepared in this way, this library enables embedding and dynamic view selection.
@@ -29,6 +27,32 @@ Where multiple pages satisfy the restrictions of the current view, the first (le
 
 
 ## Usage
+
+### With your build system
+
+Get the package
+```bash
+npm install --save-dev powerbi-responsive
+```
+
+Import it
+```typescript
+import { embedReport } from 'powerbi-responsive';
+```
+
+Embed away
+```typescript
+const container = document.getElementById('embedContainer');
+const id = '<report id>';
+const token = '<access token>;
+
+embedReport(id, token, container)
+    .then(() => console.log('Loaded!'))
+    .catch(console.error);
+```
+
+### From a CDN
+
 
 
 ## Authentication
