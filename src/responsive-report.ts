@@ -21,10 +21,22 @@ const bindResizer = (report: Report) => {
 };
 
 /**
+ * Set the active page.
+ *
+ * If multiple responsive layouts are present the appropirate sized one will
+ * be selected for the current view.
+ */
+const setPage = (report: Report) => (name: string) => {
+    // TODO implement page activation
+    return report.setPage(name);
+};
+
+/**
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
 const exposeActions = (report: Report) => ({
+    setPage: setPage(report),
     reload: report.reload.bind(report),
     setAccessToken: report.setAccessToken.bind(report),
     fullscreen: report.fullscreen.bind(report),
