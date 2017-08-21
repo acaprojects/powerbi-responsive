@@ -44,15 +44,27 @@ Embed away
 ```typescript
 const container = document.getElementById('embedContainer');
 const id = '<report id>';
-const token = '<access token>;
+const token = '<access token>';
 
 embedReport(id, token, container)
     .then(() => console.log('Loaded!'))
     .catch(console.error);
 ```
 
+
 ### From a CDN
 
+Add the script to your page
+```html
+<script src="//unpkg.com/powerbi-responsive/dist/bundle.min.js"></script>
+```
+
+This will bootstrap the [powerbi-client](https://github.com/Microsoft/PowerBI-JavaScript) and expand it to provide responsive report embedding
+```javascript
+powerbi.embedResponsiveReport(id, token, container)
+    .then(() => console.log('Loaded!'))
+    .catch(console.error);
+```
 
 
 ## Authentication
