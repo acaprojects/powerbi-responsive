@@ -60,14 +60,18 @@ const getPages = (report: Report) => {
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
-const exposeActions = (report: Report) => ({
-    setPage: setPage(report),
-    reload: report.reload.bind(report),
-    setAccessToken: report.setAccessToken.bind(report),
-    fullscreen: report.fullscreen.bind(report),
-    exitFullscreen: report.exitFullscreen.bind(report)
-    getPages,
-});
+const exposeActions = (report: Report) => {
+    // tslint:disable-next-line:ban-types
+    const bind = <T extends Function>(f: T) => f.bind(report) as T;
+    return {
+        setPage: setPage(report),
+        getPages: () => getPages(report),
+        reload: bind(report.reload),
+        setAccessToken: bind(report.setAccessToken),
+        fullscreen: bind(report.fullscreen),
+        exitFullscreen: bind(report.exitFullscreen)
+    };
+};
 
 /**
  * Embed a view-only, reponsive report in the specified element.
