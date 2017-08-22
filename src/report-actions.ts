@@ -1,6 +1,6 @@
 import { Report, Page } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
-import { extractPageMeta } from './page-meta';
+import { extractPageMeta, PageMeta } from './page-meta';
 import { bind } from './utils';
 
 /**
@@ -8,8 +8,7 @@ import { bind } from './utils';
  */
 export interface ReportActions {
     setPage(name: string): Promise<void>;
-    // TODO provide a proper type for each parsed page
-    getPages(): Promise<any[]>;
+    getPages(): Promise<PageMeta[]>;
 
     getFilters(): Promise<IFilter[]>;
     setFilters(filters: IFilter[]): Promise<void>;
