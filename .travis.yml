@@ -4,8 +4,9 @@ node_js:
 - 'node'
 - '7'
 
-script: npm run build && npm run doc
+script: npm run build
 
+before_deploy: npm run doc && touch docs/.nojekyll
 deploy:
   provider: pages
   skip_cleanup: true
