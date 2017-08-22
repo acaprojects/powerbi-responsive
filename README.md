@@ -26,9 +26,9 @@ For example, to enable responsive layouts for a page titled `MyReport`, create t
 *   `MyReport [min-width: 320px]`
 *   `MyReport [max-width: 320px]`
 
-When embedded, an appropriate view will be selected (and updated if resized) and then scaled to match the final view dimensions.
+When embedded, an appropriate view is selected (and updated if resized) and then scaled to match the final view dimensions.
 
-Where multiple pages satisfy the restrictions of the current view, the first (left-most in PowerBI report editor) will be selected. When no layouts meet restrictions, the first will also be shown.
+Where more than one page satisfies the restrictions of the current view, the first (left-most in PowerBI report editor) is used. When no layouts meet restrictions, the first will also be shown.
 
 
 ## Usage
@@ -73,3 +73,46 @@ powerbi.embedResponsiveReport(id, token, container)
 
 
 ## Authentication
+
+To embed reports, you must supply a [JSON web token](https://jwt.io/introduction/) that grants access to the resource. There are two strategies for providing these and their usage will depend on your application requirements.
+
+![](https://dpspowerbi.blob.core.windows.net/powerbi-prod-media/powerbi.microsoft.com/en-us/documentation/articles/powerbi-developer-embedding/20170721095914/powerbi-embed-flow.png)_
+
+
+### User owns data
+
+For applications where all users are also PowerBI users, authentication should follow [Azure Active Directory's OAuth 2.0 authorization code flow](https://docs.microsoft.com/en-au/azure/active-directory/develop/active-directory-protocols-oauth-code). The secured `resource` requested must be `https://analysis.windows.net/powerbi/api`.
+
+If using this approach you must inform powerbi-repsonsive that you are using an AAD token via an embed option:
+```javascript
+powerbi.embedResponsiveReport(id, token, container, {tokenType: 0})
+    .then(() => console.log('Loaded!'))
+    .catch(console.error);
+```
+
+
+### App owns data
+
+For use cases where all users of your application need to be provided with access to a report, the PowerBI API provides an endpoint for generating embed tokens. To access this, your application back-end must first authenticate with Azure Active Directory in order to gain access to the PowerBI API. This can be achieved via the [resource owner flow / password grant type](https://tools.ietf.org/html/rfc6749#section-4.3).
+```bash
+curl -X POST https://login.windows.net/<tennant id>/oauth2/token \
+  -d grant_type="password" \
+  -d client_id="<your client id>" \
+  --data-urlencode client_secret="<your client secret>" \
+  --data-urlencode resource="https://analysis.windows.net/powerbi/api" \
+  --data-urlencode username="<service account user>" \
+  --data-urlencode password="<service account pass>"
+```
+
+Once authenticated, generate a report view token via PowerBI's [GenerateToken](https://msdn.microsoft.com/en-us/library/mt784614.aspx) endpoint. If required, this request may also include identity information (user, roles) for preserving [row-level security](https://powerbi.microsoft.com/en-us/documentation/powerbi-developer-embedded-rls/) within the embedded report.
+```bash
+curl -X POST \
+  https://api.powerbi.com/v1.0/myorg/groups/<group id>/reports/<report id>/GenerateToken \
+  -H 'authorization: Bearer <bearer token from above>' \
+  -H 'content-type: application/json' \
+  -d '{ "accessLevel": "View" }'
+```
+
+The token returned may then be safely passed to your front end.
+
+> **A note on security:** do *not* attempt to generate these tokens from your front end. Your `client_secret` should remain that, a *secret*. Similarly, the bearer token returned from Azure Active Directory contains the identity information of your service account and should not be provided to clients.
