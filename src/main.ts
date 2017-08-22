@@ -1,9 +1,9 @@
 import { service } from 'powerbi-client';
-import { embedReport } from './responsive-report';
+import { embedReport } from './report-embed';
 import { extend } from './utils';
 
 // Export usage in other modules
-export { embedReport } from './responsive-report';
+export { embedReport } from './report-embed';
 
 // ...and extend the window.powerbi object for direct use
 const api = {
