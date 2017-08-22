@@ -76,7 +76,7 @@ powerbi.embedResponsiveReport(id, token, container)
 
 To embed reports, you must supply a [JSON web token](https://jwt.io/introduction/) that grants access to the resource. There are two strategies for providing these and their usage will depend on your application requirements.
 
-![](https://dpspowerbi.blob.core.windows.net/powerbi-prod-media/powerbi.microsoft.com/en-us/documentation/articles/powerbi-developer-embedding/20170721095914/powerbi-embed-flow.png)_
+![](https://dpspowerbi.blob.core.windows.net/powerbi-prod-media/powerbi.microsoft.com/en-us/documentation/articles/powerbi-developer-embedding/20170721095914/powerbi-embed-flow.png)
 
 
 ### User owns data
