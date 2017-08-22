@@ -3,8 +3,6 @@ import { IFilter } from 'powerbi-models';
 import { extractPageMeta } from './page-meta';
 import { bind } from './utils';
 
-export { models } from 'powerbi-client';
-
 /**
  * A set of functions that may be used to interact with an embedded report.
  */
