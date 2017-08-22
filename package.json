@@ -1,6 +1,6 @@
 {
   "name": "powerbi-responsive",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Embed-able, responsive reports from PowerBI",
   "repository": "https://github.com/acaprojects/powerbi-responsive",
   "main": "./dist/main.js",
