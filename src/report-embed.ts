@@ -1,6 +1,6 @@
 import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { embed } from './embedder';
-import { bindActions } from './report-actions';
+import { bindActions, ReportActions } from './report-actions';
 import { bindResizer } from './report-resizer';
 import { merge } from './utils';
 
