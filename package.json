@@ -6,9 +6,10 @@
   "main": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./dist ./docs",
     "build": "npm run clean && concurrently \"tsc\" \"rollup -c\"",
-    "dev": "concurrently --kill-others \"tsc -w\" \"rollup -c -w\""
+    "dev": "concurrently --kill-others \"tsc -w\" \"rollup -c -w\"",
+    "doc": "typedoc --out docs src --excludeNotExported"
   },
   "author": "Kim Burgess <kim@acaprojects.com>",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript2": "^0.5.0",
     "rollup-plugin-uglify": "^2.0.1",
+    "typedoc": "^0.8.0",
     "typescript": "^2.4.2"
   },
   "dependencies": {
