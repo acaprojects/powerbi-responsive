@@ -2,10 +2,9 @@
   "compilerOptions": {
     "target": "ES6",
     "outDir": "./dist",
-    "module": "CommonJS",
+    "module": "es2015",
     "declaration": true,
     "moduleResolution": "Node",
-    "removeComments": true,
     "strict": true,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,

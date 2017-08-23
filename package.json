@@ -3,13 +3,19 @@
   "version": "0.1.2",
   "description": "Embed-able, responsive reports from PowerBI",
   "repository": "https://github.com/acaprojects/powerbi-responsive",
-  "main": "./dist/main.js",
+  "main": "./dist/bundle.js",
+  "module": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf ./dist ./docs",
-    "build": "npm run clean && concurrently \"tsc\" \"rollup -c\"",
-    "dev": "concurrently --kill-others \"tsc -w\" \"rollup -c -w\"",
-    "doc": "typedoc --out docs src --excludeNotExported"
+    "lint": "tslint -p . --type-check",
+    "compile": "tsc",
+    "bundle": "rollup -c",
+    "minify": "uglifyjs dist/bundle.js -c -o dist/bundle.min.js",
+    "doc": "typedoc --out docs src --excludeNotExported",
+    "build": "npm-run-all clean compile bundle minify doc",
+    "dev": "nodemon --watch src -e ts --exec \"npm-run-all compile bundle lint\"",
+    "prepublish": "npm run build"
   },
   "author": "Kim Burgess <kim@acaprojects.com>",
   "license": "MIT",
@@ -20,18 +26,19 @@
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015-rollup": "^3.0.0",
-    "concurrently": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
+    "powerbi-client": "^2.3.5",
     "powerbi-models": "^0.11.3",
     "rollup": "^0.47.6",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.1.0",
+    "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-typescript2": "^0.5.0",
-    "rollup-plugin-uglify": "^2.0.1",
+    "tslint": "^5.6.0",
     "typedoc": "^0.8.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "uglify-js": "^3.0.28"
   },
-  "dependencies": {
-    "powerbi-client": "^2.3.5"
-  }
+  "dependencies": {}
 }
