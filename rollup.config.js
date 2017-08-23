@@ -4,11 +4,13 @@ import babel from 'rollup-plugin-babel';
 import { main, module } from './package.json';
 
 export default {
-    entry: module,
-    format: 'iife',
-    moduleName: 'PowerBIResponsive',
-    dest: main,
-    sourceMap: true,
+    name: 'PowerBIResponsive',
+    input: module,
+    output: {
+        file: main,
+        format: 'iife',
+    },
+    sourcemap: true,
     plugins: [
         commonjs({
             include: 'node_modules/**',
