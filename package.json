@@ -12,7 +12,7 @@
     "compile": "tsc",
     "bundle": "rollup -c",
     "minify": "uglifyjs dist/bundle.js -c -o dist/bundle.min.js",
-    "doc": "typedoc --out docs src --excludeNotExported",
+    "doc": "typedoc --out docs src --name powerbi-responsive --readme README.md --excludeNotExported --includeDeclarations --target ES6",
     "build": "npm-run-all clean compile bundle minify doc",
     "dev": "nodemon --watch src -e ts --exec \"npm-run-all compile bundle lint\"",
     "prepublish": "npm run build"
