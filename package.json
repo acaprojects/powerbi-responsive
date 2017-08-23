@@ -28,8 +28,6 @@
     "babel-preset-es2015-rollup": "^3.0.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
-    "powerbi-client": "^2.3.5",
-    "powerbi-models": "^0.11.3",
     "rollup": "^0.47.6",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.1.0",
@@ -40,5 +38,8 @@
     "typescript": "^2.4.2",
     "uglify-js": "^3.0.28"
   },
-  "dependencies": {}
+  "dependencies": {
+    "powerbi-client": "^2.3.5",
+    "powerbi-models": "^0.11.3"
+  }
 }
