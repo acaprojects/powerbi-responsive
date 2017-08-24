@@ -1,5 +1,6 @@
 import { Page } from 'powerbi-client';
-import { bind } from './utils';
+import { bind, extend } from './utils';
+import { parseToMap, extract } from './parser';
 
 export interface PageMeta {
     name: string;
@@ -16,16 +17,42 @@ export interface ViewRestrictions {
 }
 
 /**
+ * Parse a page name into it's title and metadata components.
+ */
+const parsePageName = (pageName: string) => {
+    const [, name, meta] = /(.*)\s*\[(.*)\]/.exec(pageName) || [] as string[];
+    return {
+        name: name || pageName,
+        meta: meta || ''
+    };
+};
+
+/**
+ * Parse a string containing page metadata into a Map.
+ */
+const parseRestrictions = parseToMap(',', ':');
+
+/**
+ * Parse a pixel value out from a restrictions Map.
+ */
+const pxValueFrom = extract((x: string) => parseInt(x, 10));
+
+/**
  * Extract responsive layout metadata from a report page.
  */
-export const extractPageMeta: (page: Page) => PageMeta = page => ({
-    name: page.displayName,
-    isActive: () => page.isActive,
-    activate: bind(page, page.setActive),
-    restrictions: {
-        minWidth: 0,
-        maxWidth: Number.MAX_VALUE,
-        minHeight: 0,
-        maxHeight: Number.MAX_VALUE
-    }
-});
+export const extractPageMeta: (page: Page) => PageMeta = page => {
+    const { name, meta } = parsePageName(page.displayName);
+    const restrictions = parseRestrictions(meta);
+    const dimension = pxValueFrom(restrictions);
+    return {
+        name: name.trim(),
+        isActive: () => page.isActive,
+        activate: bind(page, page.setActive),
+        restrictions: {
+            minWidth: dimension('min-width', 0),
+            maxWidth: dimension('max-width', Number.MAX_VALUE),
+            minHeight: dimension('min-height', 0),
+            maxHeight: dimension('max-height', Number.MAX_VALUE)
+        }
+    };
+};
