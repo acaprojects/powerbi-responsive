@@ -21,15 +21,6 @@ export const match = (re: RegExp) => (x: string) => {
 };
 
 /**
- * Get a string contained between two other strings.
- */
-export const between = (from: string, to: string) =>
-    compose(
-        result => result.fmap(([, a]) => a),
-        match(new RegExp(`${from}(.*)${to}`))
-    );
-
-/**
  * Split a string into a tuple containing the parts to the left and right of
  * the first occurance of a seperator.
  */
