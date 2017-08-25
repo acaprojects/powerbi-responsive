@@ -7,7 +7,7 @@ export type Func<A, B> = (x: A) => B;
  * Given a collection of objects of the same type, merge them. Duplicate keys
  * will be overridden such that the right-most is favoured.
  */
-export const merge = <T>(...xs: T[]) => Object.assign(Object.create(null), ...xs) as T;
+export const merge = <T>(...xs: T[]) => Object.assign({}, ...xs) as T;
 
 /**
  * Given two object create a new (shallow clone) object that combines the
