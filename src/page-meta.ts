@@ -1,5 +1,5 @@
 import { Page } from 'powerbi-client';
-import { bind, extend } from './utils';
+import { bind } from './utils';
 import { stringToMap, parseFromMap } from './parser';
 
 export interface PageMeta {
