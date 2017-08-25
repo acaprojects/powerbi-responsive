@@ -1,6 +1,6 @@
 import { Page } from 'powerbi-client';
 import { bind, extend } from './utils';
-import { parseToMap, extract } from './parser';
+import { stringToMap, parseFromMap } from './parser';
 
 export interface PageMeta {
     name: string;
@@ -30,12 +30,12 @@ const parsePageName = (pageName: string) => {
 /**
  * Parse a string containing page metadata into a Map.
  */
-const parseRestrictions = parseToMap(',', ':');
+const parseRestrictions = stringToMap(',', ':');
 
 /**
  * Parse a pixel value out from a restrictions Map.
  */
-const pxValueFrom = extract((x: string) => parseInt(x, 10));
+const pxValueFrom = parseFromMap((x: string) => parseInt(x, 10));
 
 /**
  * Extract responsive layout metadata from a report page.
