@@ -14,7 +14,7 @@
     "minify": "uglifyjs dist/bundle.js -c -o dist/bundle.min.js",
     "doc": "typedoc --out docs src --name powerbi-responsive --readme README.md --excludeNotExported --includeDeclarations --target ES6",
     "build": "npm-run-all clean compile bundle minify doc",
-    "dev": "nodemon --watch src -e ts --exec \"npm-run-all compile bundle lint\"",
+    "dev": "nodemon --watch src -e ts --exec \"npm-run-all compile bundle minify lint\"",
     "prepublish": "npm run build"
   },
   "author": "Kim Burgess <kim@acaprojects.com>",
