@@ -19,6 +19,12 @@ export default {
                     'service',
                     'factories',
                     'models'
+                ],
+                'tsmonad': [
+                    'Maybe',
+                    'Either',
+                    'Monad',
+                    'Writer'
                 ]
             }
         }),
