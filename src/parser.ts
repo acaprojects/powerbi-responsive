@@ -1,8 +1,8 @@
 import { Maybe } from 'tsmonad';
-import { compose, extract, Func } from './utils';
+import { compose, tuple, Func } from './utils';
 
 /**
- * Check is a Maybe contains a value.
+ * Check if a Maybe contains a value.
  */
 const isJust = <T>(a: Maybe<T>) => a.caseOf({
     just: () => true,
@@ -35,7 +35,7 @@ export const between = (from: string, to: string) =>
  */
 export const splitOn = (seperator: string) =>
     compose(
-        result => result.fmap(([, l, r]) => [l, r] as [string, string]),
+        result => result.fmap(tuple(1, 2)),
         match(new RegExp(`(.*)${seperator}(.*)`))
     );
 
