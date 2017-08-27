@@ -39,7 +39,7 @@ const setPage = (report: Report) => (name: string) => {
  * into a single entity.
  */
 const getPages = (report: Report) => {
-    const queryPages = report.getPages.bind(report) as () => Promise<Page[]>;
+    const queryPages = bind(report, report.getPages);
     return queryPages().then(pages => pages.map(extractPageMeta));
 };
 
