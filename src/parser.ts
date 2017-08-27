@@ -61,4 +61,4 @@ export const parseFromMap = <T, U, V>(parser: Func<U, V>) =>
             return value
                 ? parser(value)
                 : fallback;
-            };
+        };
