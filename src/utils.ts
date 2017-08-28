@@ -54,7 +54,7 @@ export const anyTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x)
 /**
  * Check is a predicate evaluates to true for all elements of a list.
  */
-export const allTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) && p, false);
+export const allTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) && p, true);
 
 /**
  * Given a collection of elements of the same type, combine them into a map of
