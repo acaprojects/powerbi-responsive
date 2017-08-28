@@ -1,8 +1,8 @@
 import { Page } from 'powerbi-client';
-import { bind } from './utils';
+import { bind, group, anyTrue } from './utils';
 import { stringToMap, parseFromMap } from './parser';
 
-export interface PageMeta {
+export interface PageView {
     name: string;
     restrictions: ViewRestrictions;
     isActive(): boolean;
@@ -14,6 +14,13 @@ export interface ViewRestrictions {
     maxWidth: number;
     minHeight: number;
     maxHeight: number;
+}
+
+export interface PageGroup {
+    name: string;
+    views: PageView[];
+    isActive(): boolean;
+    activate(): Promise<void>;
 }
 
 /**
@@ -40,7 +47,7 @@ const pxValueFrom = parseFromMap((x: string) => parseInt(x, 10));
 /**
  * Extract responsive layout metadata from a report page.
  */
-export const extractPageMeta: (page: Page) => PageMeta = page => {
+export const extractPageMeta: (page: Page) => PageView = page => {
     const { name, meta } = parsePageName(page.displayName);
     const restrictions = parseRestrictions(meta);
     const dimension = pxValueFrom(restrictions);
@@ -55,4 +62,21 @@ export const extractPageMeta: (page: Page) => PageMeta = page => {
             maxHeight: dimension('max-height', Number.MAX_VALUE)
         }
     };
+};
+
+/**
+ * Map a list of raw pages objects to a collection of responsive page groups.
+ */
+export const groupPages: (pages: Page[]) => PageGroup[] = pages => {
+    const pageMap = group(pages.map(extractPageMeta), 'name');
+    return Array.from(pageMap.keys())
+        .map(name => {
+            const views = pageMap.get(name) || [];
+            return {
+                name,
+                views,
+                isActive: () => anyTrue(views, v => v.isActive()),
+                activate: () => Promise.resolve(), // TODO implement
+            };
+        });
 };

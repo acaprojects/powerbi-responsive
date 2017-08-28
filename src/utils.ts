@@ -3,6 +3,8 @@
  */
 export type Func<A, B> = (x: A) => B;
 
+export type Predicate<A> = (x: A) => boolean;
+
 /**
  * Given a collection of objects of the same type, merge them. Duplicate keys
  * will be overridden such that the right-most is favoured.
@@ -43,3 +45,25 @@ export const tuple = (a: number, b: number) => <T>(xs: T[]) =>
  * Well typed, right-to-left composition of a pair of unary functions.
  */
 export const compose = <A, B, C>(f: Func<B, C>, g: Func<A, B>) => (x: A) => f(g(x));
+
+/**
+ * Check is a predicate evaluates to true for any elements of a list.
+ */
+export const anyTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) || p, false);
+
+/**
+ * Check is a predicate evaluates to true for all elements of a list.
+ */
+export const allTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) && p, false);
+
+/**
+ * Given a collection of elements of the same type, combine them into a map of
+ * lists of like objects, keyed on the chosen property value.
+ */
+export const group = <T, K extends keyof T>(xs: T[], prop: K) =>
+    xs.reduce((m, x) => {
+        const key = x[prop];
+        const siblings = m.get(key) || [];
+        m.set(key, siblings.concat(x));
+        return m;
+    }, new Map<T[K], T[]>());

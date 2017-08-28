@@ -1,6 +1,6 @@
 import { Report, Page } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
-import { extractPageMeta, PageMeta } from './page-meta';
+import { extractPageMeta, groupPages, PageGroup } from './page-meta';
 import { bind } from './utils';
 
 /**
@@ -8,7 +8,7 @@ import { bind } from './utils';
  */
 export interface ReportActions {
     setPage(name: string): Promise<void>;
-    getPages(): Promise<PageMeta[]>;
+    getPages(): Promise<PageGroup[]>;
 
     getFilters(): Promise<IFilter[]>;
     setFilters(filters: IFilter[]): Promise<void>;
@@ -40,7 +40,7 @@ const setPage = (report: Report) => (name: string) => {
  */
 const getPages = (report: Report) => {
     const queryPages = bind(report, report.getPages);
-    return queryPages().then(pages => pages.map(extractPageMeta));
+    return queryPages().then(pages => groupPages(pages));
 };
 
 /**
