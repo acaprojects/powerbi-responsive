@@ -3,6 +3,14 @@
  */
 export type Func<A, B> = (x: A) => B;
 
+/**
+ * Binary function from (A, B) -> C
+ */
+export type Func2<A, B, C> = (x: A, y: B) => C;
+
+/**
+ * Map a value of A -> bool
+ */
 export type Predicate<A> = (x: A) => boolean;
 
 /**
@@ -22,7 +30,8 @@ export const extend = <A, B>(a: A, b: B) => merge<A | B>(a, b) as A & B;
  * function.
  */
 // tslint:disable-next-line:ban-types
-export const bind = <T extends Function>(thisArg: any, f: T) => f.bind(thisArg) as T;
+export const bind = <T extends Function>(thisArg: any, f: T) =>
+    f.bind(thisArg) as T;
 
 /**
  * Retrieve the nth item from a list.
@@ -32,7 +41,8 @@ export const nth = (index: number) => <T>(xs: T[]) => xs[index];
 /**
  * Extract the items from a list that appear at the provided indicies.
  */
-export const items = (indicies: number[]) => <T>(xs: T[]) => indicies.map(i => xs[i]);
+export const items = (indicies: number[]) => <T>(xs: T[]) =>
+    indicies.map(i => xs[i]);
 
 /**
  * Given two indicies and a list, extract items at these indicies to an
@@ -44,17 +54,26 @@ export const tuple = (a: number, b: number) => <T>(xs: T[]) =>
 /**
  * Well typed, right-to-left composition of a pair of unary functions.
  */
-export const compose = <A, B, C>(f: Func<B, C>, g: Func<A, B>) => (x: A) => f(g(x));
+export const compose = <A, B, C>(f: Func<B, C>, g: Func<A, B>) =>
+    (x: A) => f(g(x));
+
+/**
+ * Typed composition of a binary and unary function.
+ */
+export const compose2 = <A, B, C, D>(f: Func<C, D>, g: Func2<A, B, C>) =>
+    (x: A, y: B) => f(g(x, y));
 
 /**
  * Check is a predicate evaluates to true for any elements of a list.
  */
-export const anyTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) || p, false);
+export const anyTrue = <T>(xs: T[], f: Predicate<T>) =>
+    xs.reduce((p, x) => f(x) || p, false);
 
 /**
  * Check is a predicate evaluates to true for all elements of a list.
  */
-export const allTrue = <T>(xs: T[], f: Predicate<T>) => xs.reduce((p, x) => f(x) && p, true);
+export const allTrue = <T>(xs: T[], f: Predicate<T>) =>
+    xs.reduce((p, x) => f(x) && p, true);
 
 /**
  * Given a collection of elements of the same type, combine them into a map of
