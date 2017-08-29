@@ -34,13 +34,13 @@
     "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "tslint": "^5.6.0",
-    "tsmonad": "^0.7.2",
     "typedoc": "^0.8.0",
     "typescript": "^2.4.2",
     "uglify-js": "^3.0.28"
   },
   "dependencies": {
     "powerbi-client": "^2.3.5",
-    "powerbi-models": "^0.11.3"
+    "powerbi-models": "^0.11.3",
+    "tsmonad": "^0.7.2"
   }
 }
