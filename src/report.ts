@@ -81,14 +81,19 @@ const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
         .then(map(createResponsivePage));
 
 /**
+ * Lookup a page within a report by name.
+ */
+const getPage = (report: Report, name: string) =>
+    getPages(report).then(find(p => p.name === name));
+
+/**
  * Set the page within a responsive report.
  */
 const setPage = (report: Report) => (name: string) =>
-    getPages(report)
-        .then(pages => pages.find(p => name === p.name))
-        .then(group => group
-            ? group.activate()
-            : Promise.reject(`Could not find page titled ${name}`));
+    getPage(report, name)
+        .then(page => page
+            .valueOrThrow(new Error(`Could not find page titled ${name}`))
+            .activate());
 
 /**
  * Expose a set of actions on a reponsive report that are safe to be passed to
