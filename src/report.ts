@@ -2,7 +2,7 @@ import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
 import { groupPages, PageView } from './page';
-import { merge, bind, compose, anyTrue } from './utils';
+import { merge, bind, compose, anyTrue, map, find, maybe, isJust } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -58,23 +58,33 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
         .then(bindActions);
 
 /**
+ * Form a set of views info a ResponsivePage.
+ */
+const createResponsivePage: (views: PageView[]) => ResponsivePage = views => {
+    const defaultView = maybe(views[0]).valueOrThrow();
+    const findActive = find<PageView>(v => v.isActive());
+    const getView = find<PageView>(v => v.canShow());
+    return {
+        name: defaultView.name,
+        views,
+        isActive: () => isJust(findActive(views)),
+        activate: () => getView(views).valueOr(defaultView).activate()
+    };
+};
+
+/**
  * Get a list of all pages within the report.
  */
-const getPages: (report: Report) => () => Promise<ResponsivePage[]> = report => () =>
+const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
     bind(report, report.getPages)()
         .then(groupPages)
-        .then(viewList => viewList.map(views => ({
-            name: views[0].name,
-            views,
-            isActive: () => anyTrue(views, view => view.isActive()),
-            activate: () => (views.find(v => v.canShow()) || views[0]).activate()
-        })));
+        .then(map(createResponsivePage));
 
 /**
  * Set the page within a responsive report.
  */
 const setPage = (report: Report) => (name: string) =>
-    getPages(report)()
+    getPages(report)
         .then(pages => pages.find(p => name === p.name))
         .then(group => group
             ? group.activate()
@@ -86,7 +96,7 @@ const setPage = (report: Report) => (name: string) =>
  */
 const bindActions: (report: Report) => ReportActions = report => ({
     setPage: setPage(report),
-    getPages: getPages(report),
+    getPages: () => getPages(report),
     getFilters: bind(report, report.getFilters),
     setFilters: bind(report, report.setFilters),
     reload: bind(report, report.reload),
@@ -100,7 +110,7 @@ const bindActions: (report: Report) => ReportActions = report => ({
  * layouts as required.
  */
 const registerEvents = (report: Report) => {
-    getPages(report)()
+    getPages(report)
         .then(console.log);
 
     window.onresize = () => {

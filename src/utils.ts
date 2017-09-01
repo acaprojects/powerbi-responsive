@@ -67,6 +67,11 @@ export const compose2 = <A, B, C, D>(f: Func<C, D>, g: Func2<A, B, C>) =>
     (x: A, y: B) => f(g(x, y));
 
 /**
+ * Composable list map function.
+ */
+export const map = <A, B>(f: Func<A, B>) => (xs: A[]) => xs.map(f);
+
+/**
  * Check is a predicate evaluates to true for any elements of a list.
  */
 export const anyTrue = <T>(xs: T[], f: Predicate<T>) =>
@@ -106,3 +111,8 @@ export const isJust = <T>(a: Maybe<T>) => a.caseOf({
     just: () => true,
     nothing: () => false
 });
+
+/**
+ * Find the first element in a list that matches a predicate.
+ */
+export const find = <T>(f: Predicate<T>) => (xs: T[]) => maybe<T>(xs.find(f));
