@@ -1,8 +1,9 @@
 import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
-import { groupPages, PageView } from './page';
-import { merge, bind, map, find, maybe, isJust } from './utils';
+import { groupViews } from './view';
+import { createResponsivePage, ResponsivePage } from './page';
+import { merge, bind, map, find } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -16,16 +17,6 @@ export interface ReportActions {
     setAccessToken(token: string): Promise<void>;
     fullscreen(): void;
     exitFullscreen(): void;
-}
-
-/**
- * Wrapper for a set of responsive page layouts.
- */
-export interface ResponsivePage {
-    name: string;
-    views: PageView[];
-    isActive(): boolean;
-    activate(): Promise<void>;
 }
 
 /**
@@ -54,26 +45,11 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
         .then(bindActions);
 
 /**
- * Form a set of views info a ResponsivePage.
- */
-const createResponsivePage: (views: PageView[]) => ResponsivePage = views => {
-    const defaultView = maybe(views[0]).valueOrThrow(new Error('views must not be empty'));
-    const findActive = find<PageView>(v => v.isActive());
-    const getFirstShowable = find<PageView>(v => v.canShow());
-    return {
-        name: defaultView.name,
-        views,
-        isActive: () => isJust(findActive(views)),
-        activate: () => getFirstShowable(views).valueOr(defaultView).activate()
-    };
-};
-
-/**
  * Get a list of all pages within the report.
  */
 const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
     bind(report, report.getPages)()
-        .then(groupPages)
+        .then(groupViews)
         .then(map(createResponsivePage));
 
 /**

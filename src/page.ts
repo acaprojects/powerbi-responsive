@@ -1,80 +1,41 @@
-import { Page } from 'powerbi-client';
-import { bind, group } from './utils';
-import { stringToMap, parseFromMap } from './parser';
+import { PageView } from './view';
+import { find, maybe, isJust } from './utils';
 
-export interface PageView {
+/**
+ * Wrapper for a set of responsive page layouts.
+ */
+export interface ResponsivePage {
     name: string;
-    restrictions: ViewRestrictions;
+    views: PageView[];
     isActive(): boolean;
     activate(): Promise<void>;
-    canShow(): boolean;
-}
-
-export interface ViewRestrictions {
-    minWidth: number;
-    maxWidth: number;
-    minHeight: number;
-    maxHeight: number;
 }
 
 /**
- * Parse a page name into it's title and metadata components.
+ * Pick the default PageView from a list.
  */
-const parsePageName = (pageName: string) => {
-    const [, name, meta] = /(.*)\s*\[(.*)\]/.exec(pageName) || [] as string[];
+const defaultView = (views: PageView[]) =>
+    maybe(views[0]).valueOrThrow(new Error('no views in view list'));
+
+/**
+ * Find the active view from a list of PageViews.
+ */
+const active = find<PageView>(v => v.isActive());
+
+/**
+ * Get the first showable view from a list of options.
+ */
+const showable = find<PageView>(v => v.canShow());
+
+/**
+ * Form a set of views info a ResponsivePage.
+ */
+export const createResponsivePage: (views: PageView[]) => ResponsivePage = views => {
+    const primary = defaultView(views);
     return {
-        name: name || pageName,
-        meta: meta || ''
+        name: primary.name,
+        views,
+        isActive: () => isJust(active(views)),
+        activate: () => showable(views).valueOr(primary).activate()
     };
-};
-
-/**
- * Parse a string containing page metadata into a Map.
- */
-const parsePageMeta = stringToMap(',', ':');
-
-/**
- * Parse a pixel value out from a restrictions Map.
- */
-const pxValueFrom = parseFromMap((x: string) => parseInt(x, 10));
-
-/**
- * Check if the current state of a report container satisfy a set of view
- * restrictions.
- */
-const viewable = (container: HTMLElement, restrictions: ViewRestrictions) =>
-    restrictions.minWidth <= container.clientWidth &&
-    restrictions.maxWidth >= container.clientWidth &&
-    restrictions.minHeight <= container.clientHeight &&
-    restrictions.maxHeight >= container.clientHeight;
-
-/**
- * Extract responsive layout metadata from a report page.
- */
-const extractToView: (page: Page) => PageView = page => {
-    const { name, meta } = parsePageName(page.displayName);
-    const restrictionDefs = parsePageMeta(meta);
-    const dimension = pxValueFrom(restrictionDefs);
-    const restrictions: ViewRestrictions = {
-        minWidth: dimension('min-width', 0),
-        maxWidth: dimension('max-width', Number.MAX_VALUE),
-        minHeight: dimension('min-height', 0),
-        maxHeight: dimension('max-height', Number.MAX_VALUE)
-    };
-    return {
-        name: name.trim(),
-        isActive: () => page.isActive,
-        activate: bind(page, page.setActive),
-        canShow: () => viewable(page.report.iframe, restrictions),
-        restrictions
-    };
-};
-
-/**
- * Map a list of raw pages into a list of lists of related PageViews.
- */
-export const groupPages = (pages: Page[]) => {
-    const views = pages.map(extractToView);
-    const pageMap = group(views, 'name');
-    return Array.from(pageMap.values());
 };
