@@ -61,14 +61,14 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
  * Form a set of views info a ResponsivePage.
  */
 const createResponsivePage: (views: PageView[]) => ResponsivePage = views => {
-    const defaultView = maybe(views[0]).valueOrThrow();
+    const defaultView = maybe(views[0]).valueOrThrow(new Error('views must not be empty'));
     const findActive = find<PageView>(v => v.isActive());
-    const getView = find<PageView>(v => v.canShow());
+    const getFirstShowable = find<PageView>(v => v.canShow());
     return {
         name: defaultView.name,
         views,
         isActive: () => isJust(findActive(views)),
-        activate: () => getView(views).valueOr(defaultView).activate()
+        activate: () => getFirstShowable(views).valueOr(defaultView).activate()
     };
 };
 
