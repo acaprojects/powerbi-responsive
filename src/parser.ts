@@ -1,24 +1,11 @@
-import { Maybe } from 'tsmonad';
-import { compose, tuple, Func } from './utils';
-
-/**
- * Check if a Maybe contains a value.
- */
-const isJust = <T>(a: Maybe<T>) => a.caseOf({
-    just: () => true,
-    nothing: () => false
-});
+import { compose, tuple, Func, isJust, Maybe, maybe } from './utils';
 
 /**
  * Given a regexp execute it on a string to search, returning the result as a
  * Maybe monad so we can keep some sanity and don't have to deal with nulls.
  */
-export const match = (re: RegExp) => (x: string) => {
-    const result = re.exec(x);
-    return result
-        ? Maybe.just(result)
-        : Maybe.nothing<RegExpExecArray>();
-};
+export const match = (re: RegExp) => (x: string) =>
+    maybe<RegExpExecArray>(re.exec(x));
 
 /**
  * Split a string into a tuple containing the parts to the left and right of

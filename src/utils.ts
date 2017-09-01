@@ -1,3 +1,6 @@
+import { Maybe } from 'tsmonad';
+export { Maybe } from 'tsmonad';
+
 /**
  * Unary function from A -> B
  */
@@ -86,3 +89,20 @@ export const group = <T, K extends keyof T>(xs: T[], prop: K) =>
         m.set(key, siblings.concat(x));
         return m;
     }, new Map<T[K], T[]>());
+
+/**
+ * Construct a maybe of a concrete, non-nullable type from a potentially
+ * empty value.
+ */
+export const maybe = <T>(x: T | undefined | null) =>
+    x === undefined || x === null
+        ? Maybe.nothing<T>()
+        : Maybe.just(x);
+
+/**
+ * Check if a Maybe contains a value.
+ */
+export const isJust = <T>(a: Maybe<T>) => a.caseOf({
+    just: () => true,
+    nothing: () => false
+});
