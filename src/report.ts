@@ -2,7 +2,7 @@ import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
 import { groupPages, PageView } from './page';
-import { merge, bind, compose, anyTrue, map, find, maybe, isJust } from './utils';
+import { merge, bind, map, find, maybe, isJust } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -10,14 +10,10 @@ import { merge, bind, compose, anyTrue, map, find, maybe, isJust } from './utils
 export interface ReportActions {
     setPage(name: string): Promise<void>;
     getPages(): Promise<ResponsivePage[]>;
-
     getFilters(): Promise<IFilter[]>;
     setFilters(filters: IFilter[]): Promise<void>;
-
     reload(): Promise<void>;
-
     setAccessToken(token: string): Promise<void>;
-
     fullscreen(): void;
     exitFullscreen(): void;
 }

@@ -1,5 +1,4 @@
 import { Page } from 'powerbi-client';
-import { Maybe } from 'tsmonad';
 import { bind, group } from './utils';
 import { stringToMap, parseFromMap } from './parser';
 
