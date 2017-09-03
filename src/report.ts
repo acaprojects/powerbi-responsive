@@ -11,6 +11,7 @@ import { merge, bind, find, mapL } from './utils';
 export interface ReportActions {
     setPage(name: string): Promise<void>;
     getPages(): Promise<ResponsivePage[]>;
+    getPage(): Promise<ResponsivePage>;
     getFilters(): Promise<IFilter[]>;
     setFilters(filters: IFilter[]): Promise<void>;
     reload(): Promise<void>;
@@ -47,7 +48,7 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
 /**
  * Get a list of all pages within the report.
  */
-const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
+const getPages = (report: Report) =>
     bind(report, report.getPages)()
         .then(groupViews)
         .then(mapL(createResponsivePage));
@@ -56,7 +57,8 @@ const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
  * Lookup a page within a report by name.
  */
 const getPage = (report: Report, name: string) =>
-    getPages(report).then(find(p => p.name === name));
+    getPages(report)
+        .then(find(p => p.name === name));
 
 /**
  * Set the page within a responsive report.
@@ -70,12 +72,25 @@ const setPage = (report: Report) => (name: string) =>
             .activate());
 
 /**
+ * Get the currently active page within a report.
+ */
+const getActivePage = (report: Report) =>
+    getPages(report)
+        .then(find(p => p.isActive()))
+        .then(page => page
+            .getOrElse(() => {
+                throw new Error(`Could not find active page`);
+            })
+        );
+
+/**
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
 const bindActions: (report: Report) => ReportActions = report => ({
     setPage: setPage(report),
     getPages: () => getPages(report),
+    getPage: () => getActivePage(report),
     getFilters: bind(report, report.getFilters),
     setFilters: bind(report, report.setFilters),
     reload: bind(report, report.reload),
