@@ -12,6 +12,11 @@ export const mapO = <A, B>(f: Function1<A, B>) => (x: Option<A>) => x.map(f);
 export const mapL = <A, B>(f: Function1<A, B>) => (xs: A[]) => xs.map(f);
 
 /**
+ * Curried map onto es6 Promises.
+ */
+export const mapP = <A, B>(f: Function1<A, B>) => (x: Promise<A>) => x.then(f);
+
+/**
  * Given a collection of objects of the same type, merge them. Duplicate keys
  * will be overridden such that the right-most is favoured.
  */

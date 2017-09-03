@@ -1,9 +1,11 @@
 import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
+import ResizeObserver from 'resize-observer-polyfill';
+import { compose } from 'fp-ts/lib/function';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage } from './page';
-import { merge, bind, find, mapL } from './utils';
+import { merge, extend, bind, find, mapL, mapP } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -56,6 +58,7 @@ const getPages = (report: Report) =>
 /**
  * Lookup a page within a report by name.
  */
+// TODO curry an compose dependant functions
 const getPage = (report: Report, name: string) =>
     getPages(report)
         .then(find(p => p.name === name));
@@ -84,6 +87,15 @@ const getActivePage = (report: Report) =>
         );
 
 /**
+ * Reactivate the current page, selecting the most appopriate view for the
+ * given state.
+ */
+const resetView = compose(
+    mapP<ResponsivePage, void>(page => page.activate()),
+    getActivePage
+);
+
+/**
  * Expose a set of actions on a reponsive report that are safe to be passed to
  * the outside world.
  */
@@ -104,14 +116,9 @@ const bindActions: (report: Report) => ReportActions = report => ({
  * layouts as required.
  */
 const registerEvents = (report: Report) => {
-    getPages(report)
-        .then(console.log);
+    // TODO debounce
+    const ro = new ResizeObserver(() => resetView(report));
+    ro.observe(report.iframe);
 
-    window.onresize = () => {
-        const width = report.element.clientWidth;
-        const height = report.element.clientHeight;
-        // console.log(`${width} x ${height}`);
-    };
-
-    return report;
+    return extend(report, {__resizeObserver: ro});
 };
