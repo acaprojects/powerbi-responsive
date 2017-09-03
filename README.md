@@ -22,10 +22,8 @@ Build your initial PowerBI report as you would any other. For pages where you wi
 
 For example, to enable responsive layouts for a page titled `MyReport`, create the following pages:
 *   `MyReport [min-width: 960px]`
-*   `MyReport [min-width: 768px]`
-*   `MyReport [min-width: 480px]`
-*   `MyReport [min-width: 320px]`
-*   `MyReport [max-width: 320px]`
+*   `MyReport [min-width: 768px, max-width: 1200px]`
+*   `MyReport [max-width: 768px]`
 
 When embedded, an appropriate view is selected (and updated if resized) and then scaled to match the final view dimensions.
 
