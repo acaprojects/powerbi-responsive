@@ -55,18 +55,6 @@ export const tuple = (a: number, b: number) => <T>(xs: T[]) =>
     [a, b].map(nth).map(f => f(xs)) as [T, T];
 
 /**
- * Well typed, right-to-left composition of a pair of unary functions.
- */
-export const compose = <A, B, C>(f: Func<B, C>, g: Func<A, B>) =>
-    (x: A) => f(g(x));
-
-/**
- * Typed composition of a binary and unary function.
- */
-export const compose2 = <A, B, C, D>(f: Func<C, D>, g: Func2<A, B, C>) =>
-    (x: A, y: B) => f(g(x, y));
-
-/**
  * Composable list map function.
  */
 export const map = <A, B>(f: Func<A, B>) => (xs: A[]) => xs.map(f);

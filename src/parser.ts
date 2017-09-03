@@ -1,4 +1,5 @@
-import { compose, tuple, Func, isJust, Maybe, maybe } from './utils';
+import { tuple, Func, isJust, Maybe, maybe } from './utils';
+import { compose } from 'fp-ts/lib/function';
 
 /**
  * Given a regexp execute it on a string to search, returning the result as a
