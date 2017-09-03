@@ -1,6 +1,6 @@
 import { compose, constant, tuple, Function1 } from 'fp-ts/lib/function';
-import { Option, isSome } from 'fp-ts/lib/Option';
-import { asOption, mapO } from './utils';
+import { Option, isSome, fromNullable } from 'fp-ts/lib/Option';
+import { mapO } from './utils';
 
 type KeyVal = [string, string];
 
@@ -8,12 +8,12 @@ type KeyVal = [string, string];
  * Given a regexp execute it on a string to search, returning the result as a
  * Option type so we can keep some sanity and don't have to deal with nulls.
  */
-export const match = (re: RegExp) => asOption<string, RegExpExecArray>(re.exec);
+export const match = (re: RegExp) => (x: string) => fromNullable(re.exec(x));
 
 /**
  * Lookup a value from an es6 map, providing the result as an Option type.
  */
-export const lookup = <T, U>(m: Map<T, U>) => asOption<T, U>(m.get);
+export const lookup = <T, U>(m: Map<T, U>, key: T) => fromNullable(m.get(key));
 
 /**
  * Split a string into a tuple containing the parts to the left and right of
@@ -55,6 +55,6 @@ export const stringToMap = (propDelimiter: string | RegExp, keyValDelimiter: str
 export const parseFromMap = <T, U, V>(parser: Function1<U, V>) =>
     (propMap: Map<T, U>) =>
         (key: T, fallback: V) =>
-            lookup(propMap)(key)
+            lookup(propMap, key)
                 .map(parser)
                 .getOrElse(constant(fallback));

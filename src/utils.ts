@@ -2,13 +2,6 @@ import { Function1, Predicate } from 'fp-ts/lib/function';
 import { Option, fromNullable } from 'fp-ts/lib/Option';
 
 /**
- * Wrap a unary function from A -> B | null into a function from A -> Option<B>.
- */
-export const asOption:
-    <A, B>(f: Function1<A, B | null | undefined>) => Function1<A, Option<B>>
-    = f => x => fromNullable(f(x));
-
-/**
  * Curried map on Option types.
  */
 export const mapO = <A, B>(f: Function1<A, B>) => (x: Option<A>) => x.map(f);
