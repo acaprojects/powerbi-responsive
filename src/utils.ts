@@ -1,5 +1,17 @@
-import { Maybe } from 'tsmonad';
-export { Maybe } from 'tsmonad';
+import { Function1, Predicate } from 'fp-ts/lib/function';
+import { Option, fromNullable } from 'fp-ts/lib/Option';
+
+/**
+ * Wrap a unary function from A -> B | null into a function from A -> Option<B>.
+ */
+export const asOption:
+    <A, B>(f: Function1<A, B | null | undefined>) => Function1<A, Option<B>>
+    = f => x => fromNullable(f(x));
+
+/**
+ * Curried map on Option types.
+ */
+export const mapO = <A, B>(f: Function1<A, B>) => (x: Option<A>) => x.map(f);
 
 /**
  * Unary function from A -> B
@@ -10,11 +22,6 @@ export type Func<A, B> = (x: A) => B;
  * Binary function from (A, B) -> C
  */
 export type Func2<A, B, C> = (x: A, y: B) => C;
-
-/**
- * Map a value of A -> bool
- */
-export type Predicate<A> = (x: A) => boolean;
 
 /**
  * Given a collection of objects of the same type, merge them. Duplicate keys
@@ -84,23 +91,7 @@ export const group = <T, K extends keyof T>(xs: T[], prop: K) =>
     }, new Map<T[K], T[]>());
 
 /**
- * Construct a maybe of a concrete, non-nullable type from a potentially
- * empty value.
- */
-export const maybe = <T>(x: T | undefined | null) =>
-    x === undefined || x === null
-        ? Maybe.nothing<T>()
-        : Maybe.just(x);
-
-/**
- * Check if a Maybe contains a value.
- */
-export const isJust = <T>(a: Maybe<T>) => a.caseOf({
-    just: () => true,
-    nothing: () => false
-});
-
-/**
  * Find the first element in a list that matches a predicate.
  */
-export const find = <T>(f: Predicate<T>) => (xs: T[]) => maybe<T>(xs.find(f));
+export const find = <T>(f: Predicate<T>) => (xs: T[]) =>
+    fromNullable<T>(xs.find(f));

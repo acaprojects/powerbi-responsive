@@ -1,12 +1,19 @@
-import { tuple, Func, isJust, Maybe, maybe } from './utils';
-import { compose } from 'fp-ts/lib/function';
+import { compose, constant, tuple, Function1 } from 'fp-ts/lib/function';
+import { Option, isSome } from 'fp-ts/lib/Option';
+import { asOption, mapO } from './utils';
+
+type KeyVal = [string, string];
 
 /**
  * Given a regexp execute it on a string to search, returning the result as a
- * Maybe monad so we can keep some sanity and don't have to deal with nulls.
+ * Option type so we can keep some sanity and don't have to deal with nulls.
  */
-export const match = (re: RegExp) => (x: string) =>
-    maybe<RegExpExecArray>(re.exec(x));
+export const match = (re: RegExp) => asOption<string, RegExpExecArray>(re.exec);
+
+/**
+ * Lookup a value from an es6 map, providing the result as an Option type.
+ */
+export const lookup = <T, U>(m: Map<T, U>) => asOption<T, U>(m.get);
 
 /**
  * Split a string into a tuple containing the parts to the left and right of
@@ -14,7 +21,7 @@ export const match = (re: RegExp) => (x: string) =>
  */
 export const splitOn = (seperator: string) =>
     compose(
-        result => result.fmap(tuple(1, 2)),
+        mapO<RegExpExecArray, KeyVal>(([_, l, r]) => tuple(l, r)),
         match(new RegExp(`(.*)${seperator}(.*)`))
     );
 
@@ -23,7 +30,7 @@ export const splitOn = (seperator: string) =>
  */
 export const toKeyVal = (seperator: string) =>
     compose(
-        result => result.fmap(x => x.map(y => y.trim()) as [string, string]),
+        mapO<KeyVal, KeyVal>(([k, v]) => [k.trim(), v.trim()]),
         splitOn(seperator)
     );
 
@@ -35,18 +42,19 @@ export const stringToMap = (propDelimiter: string | RegExp, keyValDelimiter: str
         new Map(
             x.split(propDelimiter)
                 .map(toKeyVal(keyValDelimiter))
-                .filter(isJust)
-                .map(p => p.valueOrThrow())
+                .filter(isSome)
+                .map(p => p.getOrElse(() => {
+                    // This should never fire as we filtered above, but just in case...
+                    throw new Error(`Error parsing properties from:\n${x}`);
+                }))
         );
 
 /**
  * Wrapper for querying value from within a Map and parsing them on the way out.
  */
-export const parseFromMap = <T, U, V>(parser: Func<U, V>) =>
-    (map: Map<T, U>) =>
-        (key: T, fallback: V) => {
-            const value = map.get(key);
-            return value
-                ? parser(value)
-                : fallback;
-        };
+export const parseFromMap = <T, U, V>(parser: Function1<U, V>) =>
+    (propMap: Map<T, U>) =>
+        (key: T, fallback: V) =>
+            lookup(propMap)(key)
+                .map(parser)
+                .getOrElse(constant(fallback));

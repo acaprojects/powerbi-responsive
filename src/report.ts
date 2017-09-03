@@ -3,7 +3,7 @@ import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage } from './page';
-import { merge, bind, map, find } from './utils';
+import { merge, bind, map, find, mapO } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -64,7 +64,9 @@ const getPage = (report: Report, name: string) =>
 const setPage = (report: Report) => (name: string) =>
     getPage(report, name)
         .then(page => page
-            .valueOrThrow(new Error(`Could not find page titled ${name}`))
+            .getOrElse(() => {
+                throw new Error(`Could not find page titled ${name}`);
+            })
             .activate());
 
 /**

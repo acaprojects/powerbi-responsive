@@ -1,5 +1,7 @@
+import { isSome, fromNullable } from 'fp-ts/lib/Option';
+import { constant } from 'fp-ts/lib/function';
 import { PageView } from './view';
-import { find, maybe, isJust } from './utils';
+import { find } from './utils';
 
 /**
  * Wrapper for a set of responsive page layouts.
@@ -14,8 +16,12 @@ export interface ResponsivePage {
 /**
  * Pick the default PageView from a list.
  */
+// TODO convert to using NonEmptyArray
 const defaultView = (views: PageView[]) =>
-    maybe(views[0]).valueOrThrow(new Error('no views in view list'));
+    fromNullable(views[0])
+        .getOrElse(() => {
+            throw new Error('no views in view list');
+        });
 
 /**
  * Find the active view from a list of PageViews.
@@ -35,7 +41,7 @@ export const createResponsivePage: (views: PageView[]) => ResponsivePage = views
     return {
         name: primary.name,
         views,
-        isActive: () => isJust(active(views)),
-        activate: () => showable(views).valueOr(primary).activate()
+        isActive: () => isSome(active(views)),
+        activate: () => showable(views).getOrElse(constant(primary)).activate()
     };
 };
