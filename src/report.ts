@@ -3,7 +3,7 @@ import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage } from './page';
-import { merge, bind, map, find, mapO } from './utils';
+import { merge, bind, find, mapL, mapO } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -50,7 +50,7 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
 const getPages: (report: Report) => Promise<ResponsivePage[]> = report =>
     bind(report, report.getPages)()
         .then(groupViews)
-        .then(map(createResponsivePage));
+        .then(mapL(createResponsivePage));
 
 /**
  * Lookup a page within a report by name.
