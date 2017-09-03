@@ -121,4 +121,4 @@ The token returned may then be safely passed to your front end.
 
 ## Interacting with reports
 
-When embedding a report you will be provided with a `Promise`. If there is an issue with authentication, access to the report, or access to the PowerBI service this will reject with an object containing the error details. Otherwise, it will resolve with a [an object containing a set of report actions](https://acaprojects.github.io/powerbi-responsive/interfaces/_report_actions_.reportactions.html). These may be used by your application to interact with the embedded report.
+When embedding a report you will be provided with a `Promise`. If there is an issue with authentication, access to the report, or access to the PowerBI service this will reject with an object containing the error details. Otherwise, it will resolve with a [an object containing a set of report actions](https://acaprojects.github.io/powerbi-responsive/interfaces/_src_report_.reportactions.html). These may be used by your application to interact with the embedded report.
