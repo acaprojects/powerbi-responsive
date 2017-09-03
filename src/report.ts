@@ -3,7 +3,7 @@ import { IFilter } from 'powerbi-models';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage } from './page';
-import { merge, bind, find, mapL, mapO } from './utils';
+import { merge, bind, find, mapL } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
