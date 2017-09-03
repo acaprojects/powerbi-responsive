@@ -39,6 +39,7 @@
     "uglify-js": "^3.0.28"
   },
   "dependencies": {
+    "fp-ts": "^0.5.1",
     "powerbi-client": "^2.3.5",
     "powerbi-models": "^0.11.3",
     "tsmonad": "^0.7.2"
