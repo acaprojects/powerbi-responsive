@@ -2,6 +2,7 @@ import { models, Report, IEmbedConfiguration } from 'powerbi-client';
 import { IFilter } from 'powerbi-models';
 import ResizeObserver from 'resize-observer-polyfill';
 import { compose } from 'fp-ts/lib/function';
+import { Option } from 'fp-ts/lib/Option';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage } from './page';
@@ -58,7 +59,7 @@ const getPages = (report: Report) =>
 /**
  * Lookup a page within a report by name.
  */
-// TODO curry an compose dependant functions
+// TODO curry and compose dependant functions
 const getPage = (report: Report, name: string) =>
     getPages(report)
         .then(find(p => p.name === name));
@@ -77,14 +78,15 @@ const setPage = (report: Report) => (name: string) =>
 /**
  * Get the currently active page within a report.
  */
-const getActivePage = (report: Report) =>
-    getPages(report)
-        .then(find(p => p.isActive()))
-        .then(page => page
-            .getOrElse(() => {
-                throw new Error(`Could not find active page`);
-            })
-        );
+const getActivePage = compose(
+    mapP<Option<ResponsivePage>, ResponsivePage>(page =>
+        page.getOrElse(() => {
+            throw new Error(`Could not find active page`);
+        })
+    ),
+    mapP<ResponsivePage[], Option<ResponsivePage>>(find(p => p.isActive())),
+    getPages
+);
 
 /**
  * Reactivate the current page, selecting the most appopriate view for the
