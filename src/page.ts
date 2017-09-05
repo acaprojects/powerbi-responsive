@@ -45,3 +45,13 @@ export const createResponsivePage: (views: PageView[]) => ResponsivePage = views
         activate: () => showable(views).getOrElse(constant(primary)).activate()
     };
 };
+
+/**
+ * Pointfree page activation.
+ */
+export const activate = (page: ResponsivePage) => page.activate();
+
+/**
+ * Pointfree page status query.
+ */
+export const isActive = (page: ResponsivePage) => page.isActive();

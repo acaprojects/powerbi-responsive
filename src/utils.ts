@@ -17,6 +17,13 @@ export const mapL = <A, B>(f: Function1<A, B>) => (xs: A[]) => xs.map(f);
 export const mapP = <A, B>(f: Function1<A, B>) => (x: Promise<A>) => x.then(f);
 
 /**
+ * Monadic bind for es6 promises.
+ *
+ * (They handle it internally, but this just helps keep type signatures clear)
+ */
+export const bindP = <A, B>(f: Function1<A, Promise<B>>) => (x: Promise<A>) => x.then(f);
+
+/**
  * Given a collection of objects of the same type, merge them. Duplicate keys
  * will be overridden such that the right-most is favoured.
  */
@@ -65,3 +72,11 @@ export const group = <T, K extends keyof T>(xs: T[], prop: K) =>
  */
 export const find = <T>(f: Predicate<T>) => (xs: T[]) =>
     fromNullable<T>(xs.find(f));
+
+/**
+ * Extract the value from an Option, throwing an exception if it's None.
+ *
+ * Can be used inside Promise chains to either get a value or reject.
+ */
+export const getOrThrow = (message: string) => <T>(x: Option<T>) =>
+    x.getOrElse(() => { throw new Error(message); });

@@ -5,8 +5,8 @@ import { compose } from 'fp-ts/lib/function';
 import { Option } from 'fp-ts/lib/Option';
 import { embed } from './embedder';
 import { groupViews } from './view';
-import { createResponsivePage, ResponsivePage } from './page';
-import { merge, extend, bind, find, mapL, mapP } from './utils';
+import { createResponsivePage, ResponsivePage, activate, isActive } from './page';
+import { merge, extend, bind, find, mapL, mapP, bindP, getOrThrow } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -59,32 +59,28 @@ const getPages = (report: Report) =>
 /**
  * Lookup a page within a report by name.
  */
-// TODO curry and compose dependant functions
-const getPage = (report: Report, name: string) =>
+const getPage = (report: Report) => (name: string) =>
     getPages(report)
-        .then(find(p => p.name === name));
+        .then(find(p => p.name === name))
+        .then(getOrThrow(`Could not find page titled ${name}`));
 
 /**
  * Set the page within a responsive report.
  */
-const setPage = (report: Report) => (name: string) =>
-    getPage(report, name)
-        .then(page => page
-            .getOrElse(() => {
-                throw new Error(`Could not find page titled ${name}`);
-            })
-            .activate());
+const setPage = (report: Report) => compose(
+    bindP(activate),
+    getPage(report)
+);
 
 /**
  * Get the currently active page within a report.
  */
 const getActivePage = compose(
-    mapP<Option<ResponsivePage>, ResponsivePage>(page =>
-        page.getOrElse(() => {
-            throw new Error(`Could not find active page`);
-        })
+    mapP<Option<ResponsivePage>, ResponsivePage>(
+        // Should never happen, but just in case...
+        getOrThrow('Could not find active page')
     ),
-    mapP<ResponsivePage[], Option<ResponsivePage>>(find(p => p.isActive())),
+    mapP(find(isActive)),
     getPages
 );
 
@@ -93,7 +89,7 @@ const getActivePage = compose(
  * given state.
  */
 const resetView = compose(
-    mapP<ResponsivePage, void>(page => page.activate()),
+    bindP(activate),
     getActivePage
 );
 
