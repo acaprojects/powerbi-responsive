@@ -3,6 +3,8 @@ import { IFilter } from 'powerbi-models';
 import ResizeObserver from 'resize-observer-polyfill';
 import { compose } from 'fp-ts/lib/function';
 import { Option } from 'fp-ts/lib/Option';
+import { mapOption } from 'fp-ts/lib/Array';
+import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage, activate, isActive } from './page';
@@ -54,6 +56,7 @@ export const embedReport = (id: string, accessToken: string, container: HTMLElem
 const getPages = (report: Report) =>
     bind(report, report.getPages)()
         .then(groupViews)
+        .then(mapOption(fromArray))
         .then(mapL(createResponsivePage));
 
 /**
