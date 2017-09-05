@@ -8,7 +8,7 @@ import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { embed } from './embedder';
 import { groupViews } from './view';
 import { createResponsivePage, ResponsivePage, activate, isActive } from './page';
-import { merge, extend, bind, find, mapL, mapP, bindP, getOrThrow } from './utils';
+import { merge, extend, bind, find, mapL, mapP, bindP, getOrThrow, debounce } from './utils';
 
 /**
  * A set of functions that may be used to interact with an embedded report.
@@ -113,12 +113,11 @@ const bindActions: (report: Report) => ReportActions = report => ({
 });
 
 /**
- * Bind to resize events on the view housing a report and switch in alternative
- * layouts as required.
+ * Bind to resize events on the element that's housing a report and switch in
+ * alternative layouts as required.
  */
 const registerEvents = (report: Report) => {
-    // TODO debounce
-    const ro = new ResizeObserver(() => resetView(report));
+    const ro = new ResizeObserver(debounce(() => resetView(report)));
     ro.observe(report.iframe);
 
     return extend(report, {__resizeObserver: ro});

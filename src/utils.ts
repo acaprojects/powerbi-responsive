@@ -1,4 +1,4 @@
-import { Function1, Predicate } from 'fp-ts/lib/function';
+import { Function1, Predicate, Lazy } from 'fp-ts/lib/function';
 import { Option, fromNullable } from 'fp-ts/lib/Option';
 
 /**
@@ -41,8 +41,22 @@ export const extend = <A, B>(a: A, b: B) =>
  * function.
  */
 // tslint:disable-next-line:ban-types
-export const bind = <T extends Function>(thisArg: any, f: T) =>
-    f.bind(thisArg) as T;
+export const bind = <T extends Function>(context: any, f: T) =>
+    f.bind(context) as T;
+
+/**
+ * Debounce a lazy execution context such that it won't run until it hasn't
+ * been called for `wait` milliseconds.
+ */
+export const debounce = <T>(f: Lazy<T>, wait = 100, context?) => {
+    let timeout: number;
+    return () => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = window.setTimeout(bind(context, f), wait);
+    };
+};
 
 /**
  * Check is a predicate evaluates to true for any elements of a list.
