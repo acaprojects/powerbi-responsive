@@ -1,0 +1,389 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>powerbi-responsive</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">powerbi-responsive</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> powerbi-responsive</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="powerbi-responsive">PowerBI-Responsive</h1>
+				<p><a href="https://travis-ci.org/acaprojects/powerbi-responsive"><img src="https://travis-ci.org/acaprojects/powerbi-responsive.svg?branch=master" alt="Build Status"></a>
+					<a href="https://codeclimate.com/github/acaprojects/powerbi-responsive"><img src="https://codeclimate.com/github/acaprojects/powerbi-responsive/badges/gpa.svg" alt="Code Climate"></a>
+					<a href="https://david-dm.org/acaprojects/powerbi-responsive"><img src="https://david-dm.org/acaprojects/powerbi-responsive/status.svg" alt="Dependencies Status"></a>
+					<a href="https://david-dm.org/acaprojects/powerbi-responsive?type=dev"><img src="https://david-dm.org/acaprojects/powerbi-responsive/dev-status.svg" alt="Dev Dependencies Status"></a>
+				<a href="https://badge.fury.io/js/powerbi-responsive"><img src="https://badge.fury.io/js/powerbi-responsive.svg" alt="npm version"></a></p>
+				<p>Standard <a href="http://powerbi.com/">PowerBI</a> reports provide a single, static layout (and optional, secondary layout when viewed with PowerBI mobile app). This presents some challenges when embedding these within responsive UI&#39;s.</p>
+				<p>To support this, we can take advantage of the ability to build a report from multiple pages, each with their own dimensions. Once a report is prepared in this way, this library enables embedding and dynamic view selection.</p>
+				<h2 id="report-structure">Report Structure</h2>
+				<p>Build your initial PowerBI report as you would any other. For pages where you wish to support responsive layouts:</p>
+				<ol>
+					<li>Duplicate the page</li>
+					<li>Set custom dimensions</li>
+					<li>Using a format similar to <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries">CSS media queries</a>, include any restrictions<sup>*</sup> within the page title. These should be enclosed in square brackets.</li>
+				</ol>
+				<blockquote>
+					<p><sup>*</sup><code>min-width</code>, <code>max-width</code>, <code>min-height</code> and <code>max-height</code> parameters are supported with values in <code>px</code>.</p>
+				</blockquote>
+				<p>For example, to enable responsive layouts for a page titled <code>MyReport</code>, create the following pages:</p>
+				<ul>
+					<li><code>MyReport [min-width: 960px]</code></li>
+					<li><code>MyReport [min-width: 768px, max-width: 1200px]</code></li>
+					<li><code>MyReport [max-width: 768px]</code></li>
+				</ul>
+				<p>When embedded, an appropriate view is selected (and updated if resized) and then scaled to match the final view dimensions.</p>
+				<p>Where more than one page satisfies the restrictions of the current view, the first (left-most in PowerBI report editor) is used. When no layouts meet restrictions, the first will also be shown.</p>
+				<h2 id="usage">Usage</h2>
+				<h3 id="with-your-build-system">With your build system</h3>
+				<p>Get the package</p>
+				<pre><code class="lang-bash">npm install --save-dev powerbi-responsive
+</code></pre>
+				<p>Import it</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { embedReport } <span class="hljs-keyword">from</span> <span class="hljs-string">'powerbi-responsive'</span>;
+</code></pre>
+				<p>Embed away</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">const</span> container = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'embedContainer'</span>);
+<span class="hljs-keyword">const</span> id = <span class="hljs-string">'&lt;report id&gt;'</span>;
+<span class="hljs-keyword">const</span> token = <span class="hljs-string">'&lt;access token&gt;'</span>;
+
+embedReport(id, token, container)
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded!'</span>))
+    .catch(<span class="hljs-built_in">console</span>.error);
+</code></pre>
+				<h3 id="from-a-cdn">From a CDN</h3>
+				<p>Add the script to your page</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"//unpkg.com/powerbi-responsive/dist/bundle.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+				<p>This will bootstrap the <a href="https://github.com/Microsoft/PowerBI-JavaScript">powerbi-client</a> and expand it to provide responsive report embedding</p>
+				<pre><code class="lang-javascript">powerbi.embedResponsiveReport(id, token, container)
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded!'</span>))
+    .catch(<span class="hljs-built_in">console</span>.error);
+</code></pre>
+				<h2 id="authentication">Authentication</h2>
+				<p>To embed reports, you must supply a <a href="https://jwt.io/introduction/">JSON web token</a> that grants access to the resource. There are two strategies for providing these and their usage will depend on your application requirements.</p>
+				<p><img src="https://dpspowerbi.blob.core.windows.net/powerbi-prod-media/powerbi.microsoft.com/en-us/documentation/articles/powerbi-developer-embedding/20170721095914/powerbi-embed-flow.png" alt=""></p>
+				<h3 id="user-owns-data">User owns data</h3>
+				<p>For applications where all users are also PowerBI users, authentication should follow <a href="https://docs.microsoft.com/en-au/azure/active-directory/develop/active-directory-protocols-oauth-code">Azure Active Directory&#39;s OAuth 2.0 authorization code flow</a>. The secured <code>resource</code> requested must be <code>https://analysis.windows.net/powerbi/api</code>.</p>
+				<p>If using this approach you must inform powerbi-repsonsive that you are using an AAD token via an embed option:</p>
+				<pre><code class="lang-javascript">powerbi.embedResponsiveReport(id, token, container, {<span class="hljs-attr">tokenType</span>: <span class="hljs-number">0</span>})
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded!'</span>))
+    .catch(<span class="hljs-built_in">console</span>.error);
+</code></pre>
+				<h3 id="app-owns-data">App owns data</h3>
+				<p>For use cases where all users of your application need to be provided with access to a report, the PowerBI API provides an endpoint for generating embed tokens. To access this, your application back-end must first authenticate with Azure Active Directory in order to gain access to the PowerBI API. This can be achieved via the <a href="https://tools.ietf.org/html/rfc6749#section-4.3">resource owner flow / password grant type</a>.</p>
+				<pre><code class="lang-bash">curl -X POST https://login.windows.net/&lt;tennant id&gt;/oauth2/token \
+  -d grant_type=<span class="hljs-string">"password"</span> \
+  -d client_id=<span class="hljs-string">"&lt;your client id&gt;"</span> \
+  --data-urlencode client_secret=<span class="hljs-string">"&lt;your client secret&gt;"</span> \
+  --data-urlencode resource=<span class="hljs-string">"https://analysis.windows.net/powerbi/api"</span> \
+  --data-urlencode username=<span class="hljs-string">"&lt;service account user&gt;"</span> \
+  --data-urlencode password=<span class="hljs-string">"&lt;service account pass&gt;"</span>
+</code></pre>
+				<p>Once authenticated, generate a report view token via PowerBI&#39;s <a href="https://msdn.microsoft.com/en-us/library/mt784614.aspx">GenerateToken</a> endpoint. If required, this request may also include identity information (user, roles) for preserving <a href="https://powerbi.microsoft.com/en-us/documentation/powerbi-developer-embedded-rls/">row-level security</a> within the embedded report.</p>
+				<pre><code class="lang-bash">curl -X POST \
+  https://api.powerbi.com/v1.0/myorg/groups/&lt;group id&gt;/reports/&lt;report id&gt;/GenerateToken \
+  -H <span class="hljs-string">'authorization: Bearer &lt;bearer token from above&gt;'</span> \
+  -H <span class="hljs-string">'content-type: application/json'</span> \
+  -d <span class="hljs-string">'{ "accessLevel": "View" }'</span>
+</code></pre>
+				<p>The token returned may then be safely passed to your front end.</p>
+				<blockquote>
+					<p><strong>A note on security:</strong> do <em>not</em> attempt to generate these tokens from your front end. Your <code>client_secret</code> should remain that, a <em>secret</em>. Similarly, the bearer token returned from Azure Active Directory contains the identity information of your service account and should not be provided to clients.</p>
+				</blockquote>
+				<h2 id="interacting-with-reports">Interacting with reports</h2>
+				<p>When embedding a report you will be provided with a <code>Promise</code>. If there is an issue with authentication, access to the report, or access to the PowerBI service this will reject with an object containing the error details. Otherwise, it will resolve with a <a href="https://acaprojects.github.io/powerbi-responsive/interfaces/_src_report_.reportactions.html">an object containing a set of report actions</a>. These may be used by your application to interact with the embedded report.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_embedder_.html">"src/embedder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_main_.html">"src/main"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_page_.html">"src/page"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_parser_.html">"src/parser"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_report_.html">"src/report"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_utils_.html">"src/utils"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_view_.html">"src/view"</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_fs_extra_index_d_.html">"node_<wbr>modules/@types/fs-<wbr>extra/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_handlebars_index_d_.html">"node_<wbr>modules/@types/handlebars/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_highlight_js_index_d_.html">"node_<wbr>modules/@types/highlight.js/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_lodash_index_d_.html">"node_<wbr>modules/@types/lodash/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_marked_index_d_.html">"node_<wbr>modules/@types/marked/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_minimatch_index_d_.html">"node_<wbr>modules/@types/minimatch/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_node_index_d_.html">"node_<wbr>modules/@types/node/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_node_inspector_d_.html">"node_<wbr>modules/@types/node/inspector.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules__types_shelljs_index_d_.html">"node_<wbr>modules/@types/shelljs/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_alt_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Alt.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_alternative_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Alternative.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_applicative_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Applicative.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_apply_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Apply.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_array_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Array.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_bifunctor_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Bifunctor.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_chain_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Chain.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_chainrec_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Chain<wbr>Rec.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_comonad_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Comonad.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_either_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Either.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_extend_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Extend.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_filterable_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Filterable.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_foldable_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Foldable.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_functor_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Functor.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_hkt_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/HKT.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_monad_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Monad.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_monoid_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Monoid.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_nonemptyarray_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Non<wbr>Empty<wbr>Array.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_option_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Option.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_ord_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Ord.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_ordering_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Ordering.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_plus_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Plus.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_semigroup_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Semigroup.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_setoid_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Setoid.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_traversable_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Traversable.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_unfoldable_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Unfoldable.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_witherable_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/<wbr>Witherable.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_fp_ts_lib_function_d_.html">"node_<wbr>modules/fp-<wbr>ts/lib/function.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_http_post_message_dist_httppostmessage_d_.html">"node_<wbr>modules/http-<wbr>post-<wbr>message/dist/http<wbr>Post<wbr>Message.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_powerbi_client_dist_powerbi_client_d_.html">"node_<wbr>modules/powerbi-<wbr>client/dist/powerbi-<wbr>client.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_powerbi_models_dist_models_d_.html">"node_<wbr>modules/powerbi-<wbr>models/dist/models.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_powerbi_router_dist_router_d_.html">"node_<wbr>modules/powerbi-<wbr>router/dist/router.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_resize_observer_polyfill_src_index_d_.html">"node_<wbr>modules/resize-<wbr>observer-<wbr>polyfill/src/index.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_node_modules_window_post_message_proxy_dist_windowpostmessageproxy_d_.html">"node_<wbr>modules/window-<wbr>post-<wbr>message-<wbr>proxy/dist/window<wbr>Post<wbr>Message<wbr>Proxy.d"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
